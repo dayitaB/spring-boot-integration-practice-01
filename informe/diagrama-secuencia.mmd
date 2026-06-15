@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant Test as Prueba JUnit
+    participant Mock as MockMvc
+    participant Ctrl as AirportController
+    participant Serv as AirportService
+    participant Repo as AirportRepository
+    participant BD as Base de datos H2 - stub de la BD real
+
+    Test->>Mock: POST /api/airports con datos del aeropuerto
+    Mock->>Ctrl: Recibe la peticion HTTP
+    Ctrl->>Serv: create datosAeropuerto
+    Serv->>Repo: existsByCode UIO
+    Repo->>BD: Consulta si el codigo ya existe
+    BD-->>Repo: No existe
+    Serv->>Repo: save nuevoAeropuerto
+    Repo->>BD: Guarda el nuevo registro
+    BD-->>Repo: Registro guardado con id
+    Repo-->>Serv: Aeropuerto guardado
+    Serv-->>Ctrl: Aeropuerto creado
+    Ctrl-->>Mock: Respuesta 201 Created con JSON
+    Mock-->>Test: Devuelve la respuesta
+    Test->>Test: Verificar que todo sea correcto
